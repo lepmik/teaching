@@ -266,6 +266,14 @@ xlim([0, .1])
 xlabel('Time (s)')
 ylabel('Amplitude')
 !ec
+If we zoom in and set on markers we can see the samples with the line drawn
+between
+!bc pycode
+plot(time, sound_440, '-*')
+xlim([0, .001])
+xlabel('Time (s)')
+ylabel('Amplitude')
+!ec
 What does this sinusoid sound like?
 !bc pycode
 ipd.Audio(sound_440, rate=sample_rate)
@@ -343,7 +351,7 @@ n_samples = int(duration * sample_rate)
 time = linspace(0, duration, n_samples) # time variable
 sound_440 = amplitude * sin(2 * pi * frequency * time)        # pure sine wave at 440 Hz
 
-plot(time, sound_440)
+plot(time, sound_440, '-*')
 xlim([0, .1])
 xlabel('Time (s)')
 ylabel('Amplitude')
@@ -411,7 +419,6 @@ frequency, psd = signal.periodogram(sound_440, sample_rate)
 fig, (psd_ax, amp_ax) = subplots(1, 2)
 
 amp_ax.plot(time, sound_440)
-amp_ax.set_xlim([0, .1])
 peak_freq = frequency[psd == psd.max()]
 psd_ax.plot(frequency, psd, label='Peak: {} Hz'.format(float(peak_freq)))
 psd_ax.set_xlabel('Frequency (Hz)')
@@ -420,6 +427,27 @@ psd_ax.legend()
 !ec
 
 !bsol
+!bc pycode
+sample_rate = 880 # sample pr. second
+
+duration = 2.0    # seconds
+amplitude = 0.5
+frequency = 440
+n_samples = int(duration * sample_rate)
+time = linspace(0, duration, n_samples) # time variable
+sound_440 = amplitude * sin(2 * pi * frequency * time) # pure sine wave at 440 Hz
+frequency, psd = signal.periodogram(sound_440, sample_rate)
+
+fig, (psd_ax, amp_ax) = subplots(1, 2)
+
+amp_ax.plot(time, sound_440)
+peak_freq = frequency[psd == psd.max()]
+psd_ax.plot(frequency, psd, label='Peak: {} Hz'.format(float(peak_freq)))
+psd_ax.set_xlabel('Frequency (Hz)')
+psd_ax.set_ylabel('PSD')
+psd_ax.legend()
+!ec
+
 The sampling rate should be the double of the frequency of the signal, i.e.
 880 Hz
 !esol
@@ -429,6 +457,12 @@ When the sampling rate is at it's minimum in order to retain the correct
 frequency of the signal the signal still looks distorted when plotted in time.
 However, there is no loss of information, which can be seen from the periodogram.
 How strange is this? The signal looks completely messed up, but it's actually not.
+
+This is because we know it is a sinusoid, therefore we may use that information
+when interpolating between the lines. That is, we don't just draw lines between
+the points, we draw a sinusoid. And as we will discuss below, there is only one
+sinusoid that fit as long as the frequency is lower than $1/2$ of the sampling
+rate.
 !eremarks
 
 ===== Why this relation between sampling rate and signal frequency =====
@@ -466,8 +500,8 @@ n_samples_low = int(duration * sample_rate_low)
 time_low = linspace(0, duration, n_samples_low) # time variable
 sound_low = amplitude * sin(2 * pi * frequency_low * time_low) # pure sine wave at 440 Hz
 
-plot(time_low, sound_low, '*')
-plot(time_real, sound_real)
+plot(time_low, sound_low, '-*', zorder=1)
+plot(time_real, sound_real, zorder=0)
 xlim([100 / frequency_low, 110 / frequency_low])
 !ec
 
