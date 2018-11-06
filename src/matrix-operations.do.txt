@@ -1,0 +1,669 @@
+===== Exercise: Vector multiplication =====
+!bblock Definition: dot product with vectors
+The dot ($\cdot$) product between two vectors $\textbf{v} = (v_0, v_1, ..., v_n)$ and
+$\textbf{w} = (w_0, w_1, ..., w_n)$ is defined as
+$\textbf{v} \cdot \textbf{w} = v_0 w_0 + v_1 w_1 + \cdots + v_n w_n$
+!eblock
+
+!bsubex
+Implement vector multiplication as a python function that takes two lists as
+arguments
+!bc pycod
+def vec_dot_vec(v, w):
+    result = 0
+    for i in range(len(w)):
+        result += # code here
+    return result
+!ec
+!bsol
+!bc pycod
+def vec_dot_vec(v, w):
+    result = 0
+    for i in range(len(w)):
+        result += v[i] * w[i]
+    return result
+!ec
+!esol
+!esubex
+
+Now that we have made a function that performs vector multiplication it would
+be nice to know that it actually works. Let's make a test case
+
+!bc pycod
+v = [5, 6, 3]
+w = [1, 5, 10]
+result = vec_dot_vec(v, w)
+true_result = 65
+if result == true_result:
+    print('vec_dot_vec is succesfull!')
+else:
+    print('vec_dot_vec is unsuccesfull!', result, 'not equal to', true_result)
+!ec
+
+Actually, with this test we require that the result is extremely accurate by
+using `==`. To illustrate this we can try a version with slightly different
+values for $v,w$
+
+!bc pycod
+v = [5.0000000000001, 6, 3]
+w = [1, 5.000000000001, 10]
+result = vec_dot_vec(v, w)
+true_result = 65
+if result == true_result:
+    print('vec_dot_vec is succesfull!')
+else:
+    print('vec_dot_vec is unsuccesfull!', result, 'not equal to', true_result)
+!ec
+As we see here, the test claims that the method does not compute correctly.
+This is because we use multiplication, which can be very sensitive to
+machine precision.
+!bsubex
+Implement a test function that can test if two numbers are equal with given
+precision
+!bc pycod
+def num_ca_equal(a, b, precision=10):
+    if # a and be are almost equal
+        return True
+    else:
+        return False
+!ec
+!bsol
+!bc pycod
+def num_ca_equal(a, b, precision=10):
+    if round(a, precision) == round(b, precision):
+        return True
+    else:
+        return False
+!ec
+!esol
+!esubex
+
+Now let's test this function
+!bc pycod
+v = [5.0000000000001, 6, 3]
+w = [1, 5.000000000001, 10]
+result = vec_dot_vec(v, w)
+true_result = 65
+if num_ca_equal(result, true_result, precision=10):
+    print('vec_dot_vec is succesfull!')
+else:
+    print('vec_dot_vec is unsuccesfull!', result, 'not equal to', true_result)
+!ec
+
+===== Exercise: Matrix Vector multiplication =====
+Now we can try to make a function that does matrix operations, first we have to
+figure out how to define a matrix with python.
+Python lists can store anything
+inside them, we can utilize this to build a matrix.
+Let's define a row as a list inside a list, which means that we write the
+following matrix
+!bt
+A =
+\begin{bmatrix}
+    0       & 0.2 & 1.5 & 0 \\
+    0.9     & 0   & 0   & 0 \\
+    0       & 0.8 & 0   & 0 \\
+    0       & 0   & 0.5 & 0.3
+\end{bmatrix}
+!et
+as a python list:
+!bc pycod
+A = [[0, 0.2, 1.5, 0.0],
+     [0.9, 0, 0, 0],
+     [0, 0.8, 0, 0],
+     [0, 0, 0.5, 0.3]]
+!ec
+
+Ok, now let's make a function that can multipy a matrix with a vector.
+
+!bblock Definition: dot product of matrix with vector
+The dot ($\cdot$) product between a $m x n$ matrix
+!bt
+A =
+\begin{bmatrix}
+    a_{0,0}   & a_{0,1} & \dots  & a_{0,n} \\
+    a_{1,0}   & a_{1,1} & \dots  & a_{1,n} \\
+    \vdots    & \vdots  & \ddots & \vdots \\
+    a_{m,0}   & a_{m,1} & \dots  & a_{m,n}
+\end{bmatrix}
+!et
+and a vector $\textbf{v} = (v_0, v_1, ..., v_n)$ is defined as
+!bt
+\begin{equation*}
+A \cdot \textbf{v} = (
+  a_{0,0} v_0 + a_{0,1} v_1 + \cdots + a_{0,n} v_n,
+  a_{1,0} v_0 + a_{1,1} v_1 + \cdots + a_{1,n} v_n,
+  \dots,
+  a_{m,0} v_0 + a_{m,1} v_1 + \cdots + a_{m,n} v_n
+)
+\end{equation*}
+!et
+!eblock
+
+!bsubex
+Implement matrix-vector multiplication as a python function that takes two lists as
+arguments. Remember that you may use the `vec_dot_vec` function, and that the
+rows of A is vectors.
+!bc pycod
+def mat_dot_vec(A, v):
+    result = []
+    for i in range(len(A)):
+        # your code here
+    return result
+!ec
+!bsol
+!bc pycod
+def mat_dot_vec(A, v):
+    result = []
+    for i in range(len(A)):
+        result.append(vec_dot_vec(A[i], v))
+    return result
+!ec
+!esol
+!esubex
+
+Let's now test our function with some ground truth so we are sure that it works
+properly
+
+!bc pycod
+v = [1000, 700, 500, 200]
+A = [[0, 0.2, 1.5, 0.0],
+     [0.9, 0, 0, 0],
+     [0, 0.8, 0, 0],
+     [0, 0, 0.5, 0.3]]
+result = mat_dot_vec(A, v)
+true_result = [890, 900, 560, 310]
+if result == true_result:
+    print('mat_dot_vec is succesfull!')
+else:
+    print('mat_dot_vec is unsuccesfull!', result, 'not equal to', true_result)
+!ec
+
+Again we impose a severly strict test by use of `==`, we might need a fuction
+that can test if two vectors are approximately equal
+
+!bsubex
+Implement a test function that checks if two vectors ar approximately equal
+!bc pycod
+def vec_ca_equal(v, w, precision=10):
+    if len(v) != len(w):
+        return False
+    for i in range(len(w)):
+        # test if the numbers v[i] and w[i] are approximately equal
+            return False
+    return True
+!ec
+!bsol
+!bc pycod
+def vec_ca_equal(v, w, precision=10):
+    if len(v) != len(w):
+        return False
+    for i in range(len(w)):
+        if not num_ca_equal(v[i], w[i], precision):
+            return False
+    return True
+!ec
+!esol
+!esubex
+
+Now let's see if our matrix-vector multiplication function works even if numbers
+are not exact
+
+!bc pycod
+v = [1000, 700.00000000001, 500, 200]
+A = [[0, 0.2, 1.5, 0.0],
+     [0.9, 0, 0, 0],
+     [0, 0.8, 0, 0],
+     [0, 0, 0.5, 0.3]]
+result = mat_dot_vec(A, v)
+true_result = [890, 900, 560, 310]
+if vec_ca_equal(result, true_result, precision=10):
+    print('mat_dot_vec is succesfull!')
+else:
+    print('mat_dot_vec is unsuccesfull!', result, 'not equal to', true_result)
+!ec
+
+===== Exercise: Matrix multiplication =====
+In order to do multiply two matrices we need some way of flipping a matrix,
+as seen in the figure below.
+This is called transposing a matrix, which means that each row becomes a column.
+
+#!bu-alert
+#Vis slide "Matrise multiplikasjon"
+#!eu-alert
+
+
+
+!bsubex
+Implement a python function that takes transposes a matrix arguments.
+!bc pycod
+def transpose(A):
+    result = []
+    nrows = len(A)
+    ncols = len(A[0])
+    for i in range(nrows):
+        row = []
+        for j in range(ncols):
+            # code here
+        result.append(row)
+    return result
+!ec
+!bsol
+!bc pycod
+def transpose(A):
+    result = []
+    nrows = len(A)
+    ncols = len(A[0])
+    for i in range(nrows):
+        row = []
+        for j in range(ncols):
+            row.append(A[j][i])
+        result.append(row)
+    return result
+!ec
+!esol
+!esubex
+Now, we can try to multiply matrices
+!bsubex
+Implement matrix-matrix multiplication as a python function that takes two lists as
+arguments. Remember that you may use the `mat_dot_vec` function, and that the
+rows of B is vectors.
+!bc pycod
+def mat_dot_mat(A, B):
+    result = []
+    A_T = # transpose A
+    for b in B:
+        # multiply matrix A_T with vector b
+    return result
+!ec
+!bsol
+!bc pycod
+def mat_dot_mat(A, B):
+    result = []
+    A_T = transpose(A)
+    for b in B:
+        result.append(mat_dot_vec(A_T, b))
+    return result
+!ec
+!esol
+!esubex
+
+And in order to test this function we need to check if each number is approximately
+equal to each other
+
+!bsubex
+Implement a test function that checks if two matrices ar approximately equal
+!bc pycod
+def mat_ca_equal(A, B, precision=10):
+    if len(A) != len(B):
+        return False
+    for a, b in zip(A, B):
+        # if not vector a is approximately equal to b
+            return False
+    return True
+!ec
+!bsol
+!bc pycod
+def mat_ca_equal(A, B, precision=10):
+    if len(A) != len(B):
+        return False
+    for a, b in zip(A, B):
+        if not vec_ca_equal(a, b, precision):
+            return False
+    return True
+!ec
+!esol
+!esubex
+Lets make a test case, to not write so many matrices over and over again we can
+test $A^2$, play around with precision to see what level of precision we can expect
+from a the second power of A.
+!bc pycod
+A = [[0, 0.2, 1.5, 0.0],
+     [0.9, 0, 0, 0],
+     [0, 0.8, 0, 0],
+     [0, 0, 0.5, 0.3]]
+result = mat_dot_mat(A, A)
+true_result = [[0.18, 1.2, 0, 0],
+               [0, 0.18, 1.35, 0],
+               [0.72, 0, 0, 0],
+               [0, 0.4, 0.15, 0.09]]
+if mat_ca_equal(result, true_result, 10):
+    print('mat_dot_mat is succesfull!')
+else:
+    print('mat_dot_mat is unsuccesfull!', result, 'not equal to', true_result)
+!ec
+
+Finally, we need a function that can perform multiple powers as it is tedious to
+write `A_mul = mat_dot_mat(A, A)` and then `A_mul = mat_dot_mat(A, A_mul)`
+and then `A_mul = mat_dot_mat(A, A_mul)` and so on
+
+!bsubex
+Implement a function that performs any matrix powers
+!bc pycod
+def mat_power(A, N):
+    A_power = A
+    for _ in range(1, N):
+        A_power = # code here
+    return A_power
+!ec
+!bsol
+!bc pycod
+def mat_power(A, N):
+    A_power = A
+    for _ in range(1, N):
+        A_power = mat_dot_mat(A, A_power)
+    return A_power
+!ec
+!esol
+!esubex
+
+Finally, we make a test case, to see if our `mat_power` works. Play
+around with precision to see what level of precision we can expect
+from a the 10th power of A.
+!bc pycod
+A = [[0, 0.2, 1.5, 0.0],
+     [0.9, 0, 0, 0],
+     [0, 0.8, 0, 0],
+     [0, 0, 0.5, 0.3]]
+result = mat_power(A, 10)
+true_result = [[0.23, 1.01, 1.93, 0],
+               [1.16, 0.23, 0.85, 0],
+               [0.45, 1.03, 0.11, 0],
+               [0.18, 0.31, 0.71, 0]]
+if mat_ca_equal(result, true_result, 2):
+    print('mat_power is succesfull!')
+else:
+    print('mat_power is unsuccesfull!', result, 'not equal to', true_result)
+!ec
+
+===== Exercise: Dragonflies =====
+A population of dragonflies is distributed over two dams.
+Every day, 20\% of the population in dam A migrates to dam B.
+Moreover, 30\% of the population migrates from dam B to dam A.
+The rest remains in both cases.
+Let $a_t$ be the number of dragonflies in dam A at time $t$, likewise with $b_t$.
+Then the system may be describes as
+!bt
+\begin{bmatrix}
+    a_{t+1} \\
+    b_{t+1} \\
+\end{bmatrix} =
+\begin{bmatrix}
+    0.8   & 0.3 \\
+    0.2   & 0.7 \\
+\end{bmatrix}
+\begin{bmatrix}
+    a_t \\
+    b_t \\
+\end{bmatrix}
+!et
+!bsubex
+Set up the transition matrix and determine how the population will distribute
+in the two dams after a very long time.
+!bsol
+!bc pycod
+P = [[0.8, 0.3],
+     [0.2, 0.7]]
+
+P20 = mat_power(P, 20)
+!ec
+
+!bc pycod
+n0 = [100, 100]
+n20 = mat_dot_vec(P20, n0)
+print(n20)
+!ec
+!esol
+!esubex
+
+!bsubex
+Is the solution sensitive to the initial number of dragonflies in dam A and B?
+!bsol
+!bc pycod
+n0 = [3, 10]
+n20 = mat_dot_vec(P20, n0)
+print(n20)
+!ec
+The system is sensitive to initial conditions.
+!esol
+!esubex
+
+===== Exercise: Breast cancer =====
+
+!bsubex
+Set up the transition matrix
+
+!bsol
+!bc pycod
+A = [[0.998, 0.65, 0],
+     [0.002, 0, 0.1],
+     [0, 0.35, 0.9]]
+!ec
+!esol
+!esubex
+
+!bsubex
+What happens in the long run
+
+!bsol
+!bc pycod
+A100 = mat_power(A, 100)
+n0 = [1, 0, 0] # all are healthy in the begining
+n100 = mat_dot_vec(A100, n0)
+print(n100)
+!ec
+!esol
+!esubex
+
+!bsubex
+How does the different groups evolve
+
+!bsol
+!bc pycod
+%matplotlib inline
+from pylab import *
+n0 = [1, 0, 0] # all are healthy in the begining
+healthy = []
+early = []
+late = []
+Ns = range(20)
+AN = A
+for N in Ns:
+    AN = mat_dot_mat(A, AN)
+    n = mat_dot_vec(AN, n0)
+    healthy.append(n[0])
+    early.append(n[1])
+    late.append(n[2])
+
+plt.figure()
+plt.semilogy(Ns, healthy, label='healthy')
+plt.semilogy(Ns, early, label='early stage')
+plt.semilogy(Ns, late, label='late stage')
+plt.legend()
+plt.show()
+!ec
+!esol
+!esubex
+
+!bsubex
+Is the process sensitive to initial conditions?
+
+!bsol
+!bc pycod
+from random import shuffle
+n0 = [.1, .6, .3]
+shuffle(n0)
+n100 = mat_dot_vec(A100, n0)
+print(n100)
+!ec
+!esol
+!esubex
+
+===== Exercise: Age distribution in Yellow Perch =====
+!bsubex
+Set up the transition matrix
+
+!bsol
+!bc pycod
+P = [[0, 0, 100, 150],
+     [0.05, 0, 0, 0],
+     [0, 0.2, 0, 0],
+     [0, 0, 0.75, 0]]
+!ec
+!esol
+!esubex
+
+!bsubex
+What happens in the long run
+
+!bsol
+!bc pycod
+P20 = mat_power(P, 20)
+v0 = [10000, 1000, 500, 300]
+v20 = mat_dot_vec(P20, v0)
+print(v20)
+!ec
+
+!bc pycod
+from pylab import *
+plt.figure()
+PN = P
+values = {'pop 1': [], 'pop 2': [], 'pop 3': [], 'pop 4': []}
+Ns = range(20)
+for N in Ns:
+    PN = mat_dot_mat(P, PN)
+    v = mat_dot_vec(PN, v0)
+    values['pop 1'].append(v[0])
+    values['pop 2'].append(v[1])
+    values['pop 3'].append(v[2])
+    values['pop 4'].append(v[3])
+
+for name, value in values.items():
+    plt.plot(Ns, value, label=name)
+plt.legend()
+plt.show()
+!ec
+!esol
+!esubex
+
+===== Exercise: Metabolizm of medicine =====
+!bsubex
+Set up the transition matrix
+
+!bsol
+!bc pycod
+P = [[0.5, 0],
+     [0.5, 0.2]]
+!ec
+!esol
+!esubex
+
+!bsubex
+How does the model evolve over time?
+
+!bsol
+!bc pycod
+from pylab import *
+plt.figure()
+PN = P
+values = {'tummy': [], 'blood': []}
+Ns = range(10)
+v0 = [1, 0]
+for N in Ns:
+    PN = mat_dot_mat(P, PN)
+    v = mat_dot_vec(PN, v0)
+    values['tummy'].append(v[0])
+    values['blood'].append(v[1])
+
+for name, value in values.items():
+    plt.plot(Ns, value, label=name)
+plt.legend()
+plt.show()
+!ec
+!esol
+!esubex
+
+===== Exercise: Numbers game =====
+!bsubex
+Make an algorithm that can set up the transition matrix P of shape M x M for
+any given p of length M and generate P based on a random list p.
+
+!bsol
+!bc pycod
+def make_transition_matrix(p):
+    P = []
+    for i in range(len(p)):
+        P.append([])
+        for j in range(len(p)):
+            P[i].append(0)
+
+    for i in range(len(p)):
+        for j in range(len(p)):
+            if i - j == - 1:
+                P[i][j] = 1 - p[j]
+
+            if i - j == 1:
+                P[i][j] = p[j]
+
+            if i - j == len(p) - 1:
+                P[i][j] = 1 - p[j]
+
+            if i - j == 1 - len(p):
+                P[i][j] = p[j]
+    return P
+
+from random import random
+M = 10
+p = [random() for _ in range(M)]
+P = make_transition_matrix(p)
+!ec
+!esol
+!esubex
+
+!bsubex
+Make a test case with length 3
+!bsol
+!bc pycod
+p = [.3, .4, .8]
+P_ = [[0, .6, .8],
+      [.3, 0, .2],
+      [.7, .4, 0]]
+P = make_transition_matrix(p)
+assert mat_ca_equal(P, P_, precision=10)
+!ec
+!esol
+!esubex
+
+!bsubex
+How does the model evolve over time?
+
+!bsol
+!bc pycod
+from ipythonblocks import BlockGrid
+grid = BlockGrid(M, 1, block_size=50)
+for block in grid:
+    block.red = 100
+PN = P
+Ns = range(100)
+v0 = [1 for _ in range(M)]
+for N in Ns:
+    PN = mat_dot_mat(P, PN)
+    v = mat_dot_vec(PN, v0)
+    for i in range(M):
+        grid[0,i].red = v[i] * 100
+#    grid.flash()
+grid.show()
+!ec
+!esol
+!esubex
+
+!bsubex
+How do you know that your model correctly computes the game?
+
+!bsol
+!bc pycod
+if num_ca_equal(sum(v), M, precision=10):
+    print('probability is conserved!')
+!ec
+!esol
+!esubex

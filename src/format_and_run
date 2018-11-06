@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export PATH=/home/mikkel/apps/anaconda3/bin:$PATH
+source activate doconce
+
+for FILE in $1*.do.txt; do
+ /home/mikkel/apps/anaconda3/envs/doconce/bin/doconce format ipynb "${FILE}"
+done
+
+source deactivate
+for FILE in $1*.ipynb; do
+  /home/mikkel/apps/anaconda3/bin/jupyter nbconvert --to notebook --allow-errors --execute "${FILE}" --output "${FILE}"
+done

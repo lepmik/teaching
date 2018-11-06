@@ -1,0 +1,145 @@
+===== Exercise: Fun =====
+A matrix has rows and columns, it is standard practice to index rows first and
+then columns - this can be hard to remember sometimes, if you have a hard time
+remembering, think about these radical columns (radikale kolonner).
+
+A `BlockGrid` is a matrix with colors, each block has a rgb color and of course,
+an index `i, j` (row, colums).
+The colors of a block is set with syntax `block.red = red` where
+red is a number between 0 and 255 - try to write "color picker" in google and
+you will get a color map where you can choose a color and get rgb values.
+The color of a block can also be set with `block.rgb = [red, green, blue]` where
+`red`, `green` and `blue` are each numbers between 0 and 255.
+!bsubex
+In this exercise we will use a `while loop` to go through a grid and set
+increasing values of red.
+
+We have a `10x10` matrix, which means it has 10 rows and 10 columns.
+Distribute colors to each block such that block `[0,0]` has the color `[0,0,0]`
+and block `[9,9]` has the color `[255,0,0]`, hint: solve $i*j*x=255$
+!bc pycod
+from ipythonblocks import BlockGrid
+w = 10
+h = 10
+
+grid = BlockGrid(w, h, block_size=50)
+i = 0
+while i < h:
+    j = 0
+    while j < w:
+        # Put your code here
+    i += 1
+
+grid.show()
+!ec
+!bsol
+!bc pycod
+from ipythonblocks import BlockGrid
+w = 10
+h = 10
+
+grid = BlockGrid(w, h, block_size=50)
+i = 0
+while i < h:
+    j = 0
+    while j < w:
+        block = grid[i, j]
+        block.red = j * i * 3.142
+        j += 1
+    i += 1
+
+grid.show()
+!ec
+!esol
+!esubex
+
+!bsubex
+Writing while loops can sometimes be demanding to write and the code can very
+often be simplified with for loops. Rewrite the previous code with for loops.
+
+!bsol
+!bc pycod
+from ipythonblocks import BlockGrid
+w = 10
+h = 10
+
+grid = BlockGrid(w, h, block_size=50)
+for i in range(h):
+    for j in range(w):
+        block = grid[i, j]
+        block.red = j * i * 3
+
+grid.show()
+!ec
+!esol
+!esubex
+
+!bsubex
+When the row index is equal to the column index, we are on the diagonal. Give the
+diagonal your favorite color!
+
+!bsol
+!bc pycod
+from ipythonblocks import BlockGrid
+w = 10
+h = 10
+
+grid = BlockGrid(w, h, block_size=50)
+for i in range(h):
+    for j in range(w):
+        block = grid[i, j]
+        if i == j:
+            block.blue = 200
+
+grid.show()
+!ec
+!esol
+!esubex
+
+!bsubex
+When the row index is smaller than the column index, we are in the upper
+diagonal part of the matrix. Give the upper diagonal your second most favorite color!
+
+!bsol
+!bc pycod
+from ipythonblocks import BlockGrid
+w = 10
+h = 10
+
+grid = BlockGrid(w, h, block_size=50)
+for i in range(h):
+    for j in range(w):
+        block = grid[i, j]
+        if i == j:
+            block.blue = 200
+        elif i < j:
+            block.green = 200
+grid.show()
+!ec
+!esol
+!esubex
+
+!bsubex
+When the row index is greater than the column index, we are in the lower
+diagonal part of the matrix. Give the lower diagonal your least favorite color!
+
+!bsol
+!bc pycod
+from ipythonblocks import BlockGrid
+w = 10
+h = 10
+
+grid = BlockGrid(w, h, block_size=50)
+for i in range(h):
+    for j in range(w):
+        block = grid[i, j]
+        if i == j:
+            block.blue = 200
+        elif i > j:
+            block.red = 200
+        else:
+            block.green = 200
+grid.show()
+!ec
+!esol
+!esubex

@@ -1,0 +1,79 @@
+===== Exercise: Exploring the logistic equation =====
+For the logistic difference equation
+
+!bt
+\begin{equation}
+label{eq:logdiff}
+x_{t+1} = cx_t(1 - x_t)
+\end{equation}
+!et
+
+the behavior of $x_t$ given by the equation above changes from "well behaved" to "chaotic"
+when changing the parameter $c$. Can you characterize the different behaviors
+for all values of $0 < c < 4$?
+
+Here we provide the code, which is a bit more advanced as we use some
+predefined functions and also define our own functions. The main point in this
+exercise is not to understand the details of the code, but to be able to explore
+the dynamics of the logistic difference equation with different initial
+conditions $x_0$ and rate parameters $c$.
+
+To run the code there are two code cells, the first produces the plot and
+the second code cell creates an interaction with the plot.
+When the latter code cell is run you should see two sliders, when you click on the
+sliders you should be able to drag and change the corresponding parameter.
+
+Drag the bars to explore how the behavior changes with varying parameters.
+!bsubex
+For which values of $c$ does $x_t$ increase in the beginning but flatten out in
+the long run? How does the initial condition $x_0$ change the
+behavior of $x_t$ in the long run?
+!esubex
+!bsubex
+For which values of $c$ does $x_t$ decrease in the beginning but flatten out in
+the long run? How does the initial condition $x_0$ change the
+behavior of $x_t$ in the long run?
+!esubex
+!bsubex
+For which values of $c$ do you get oscillatory behavior in $x_t$.
+How does the initial condition $x_0$ change the
+behavior of $x_t$ in the long run? Does $x_0$ change the range of $c$ that gives
+oscillatory behavior?
+!esubex
+!bsubex
+For which values of $c$ does the behavior of $x_t$ start to be chaotic?
+How does the initial condition $x_0$ change the
+behavior in the long run? Does the behavior of $x_t$ change more dramatically
+in the chaotic regime than when $x_t$ was ``well behaved''?
+This is what is known as the butterfly effect.
+!esubex
+
+!bc pycod
+%matplotlib notebook
+from pylab import *
+from ipywidgets import *
+
+x0 = 0.5
+c = 0.5
+
+def logdiff(x0, c):
+    x = [x0]
+    i = 0
+    while i < 100:
+        x.append(c * x[i] * (1 - x[i]))
+        i += 1
+    return(x)
+line, = plot(logdiff(x0, c))
+
+def update(x0, c):
+    y = logdiff(x0, c)
+    line.set_ydata(y)
+    plt.ylim([min(y) - max(y)*0.01, max(y) + max(y)*0.01])
+    gcf().canvas.draw()
+!ec
+
+!bc pycod
+interact(update,
+         x0=FloatSlider(min=0., max=1., step=.01, value=x0),
+         c=FloatSlider(min=0., max=4., step=.01, value=c));
+!ec

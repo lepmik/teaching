@@ -1,0 +1,5 @@
+The fundamental problem of communication is that of reproducing at
+one point either exactly or approximately a message selected at another
+point. Frequently the messages have meaning; that is they refer to or are
+correlated according to some system with certain physical or conceptual
+entities.

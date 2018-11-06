@@ -1,0 +1,119 @@
+!bbox Monod Growth function
+In the 1930s and 1940s the French biologist Jacques Monod carried out
+experiments on E. coli bacteria feeding on a single nutrient, such as glucose.
+If $N$ denotes the concentration of the nutrient, he modeled the per capita
+reproduction rate $R$ of the bacteria as a function of $N$:
+!bt
+\begin{equation*}
+R(N) = \frac{SN}{c + N}.
+\end{equation*}
+!et
+Here c is a positive constant and S is the saturation level of the nutrient.
+!ebox
+===== Exercise: Plot of the Monod Growth Function (2.2 E1) =====
+Given $S=$ and $c=5$, graph the monod growth function and comment on the
+shape of the graph.
+
+
+!bsol
+We calculate R for each N and plot the values
+!bc pycod
+%matplotlib inline
+from pylab import *
+S = 2
+c = 5
+N = [5, 10, 50, 100, 500, 1000, 5000, 10000]
+R = []
+i = 0
+while i < len(N):
+    R.append(S * N[i] / (c + N[i]))
+    i += 1
+plot(N, R, '.-')
+show()
+!ec
+!esol
+
+===== Exercise: Limit of the Monod Growth Function (2.2 E4) =====
+From the exercise above it appears that the limit of the Monod function is
+!bt
+\begin{equation*}
+\lim_{N\rightarrow\infty} R(N) = 2
+\end{equation*}
+!et
+
+!bsubex
+To further investigate the limit of $R(N)$ find for each N the
+distance to the limit. That is calculate for each $N$ $d = 2 - R(N)$. Which $N$
+gives the distance $d = 0.000001$?
+
+!bsol
+We calculate distance for N and print the distance, and the ``error''
+$e = d - 0.000001$. Note that you will not get $0$, but something like
+$-4.9e-13$ which is basically $0$. Explain how this relates to the difference
+between 'int' and 'float' and that 'int' is indeed more precise when it comes
+to representing whole numbers.
+!bc pycod
+S = 2
+c = 5
+N = 10000000
+distance = 2 - S * N / (c + N)
+print(N)
+print(distance)
+print(distance - 0.000001)
+!ec
+!esol
+!esubex
+
+!bsubex
+To further investigate the limit of $R(N)$ find for each N the
+rate at which $R(N)$ approaches the limit $2$. That is, for each N find first
+the distances $d(N) = 2 - R(N)$, then calculate the rate $r$ given by
+!bt
+\begin{equation*}
+r = \lim_{N\rightarrow\infty}\frac{d(N+1)}{d(N)}
+\end{equation*}
+!et
+!bsol
+We calculate distance for N ($d(N)$) and the next N ($d(N+1)$), then append the
+ratio $\frac{d(N+1)}{d(N)}$ and plot it.
+!bc pycod
+%matplotlib notebook
+from pylab import *
+S = 2
+c = 5
+N = 0
+N_step = 1
+N_stop = 10000
+rate = []
+N_list = []
+i = 0
+while N < N_stop:
+    N_next = N + N_step
+    d_N = 2 - S * N / (c + N)
+    d_N_next = 2 - S * N_next / (c + N_next)
+    rate.append(d_N_next / d_N)
+    N_list.append(N)
+    N = N_next
+plot(N_list, rate, '.-')
+show()
+!ec
+!esol
+!esubex
+
+!bsubex
+Verify that the limit indeed is $2$ using the Limit Laws.
+
+!bsol
+!bt
+\begin{align*}
+\lim_{N\rightarrow\infty} R(N) &= \lim_{N\rightarrow\infty} \frac{SN}{c + N}\\
+&= \lim_{N\rightarrow\infty} \frac{SN}{c + N} \frac{\frac{1}{N}}{\frac{1}{N}}\\
+&= \lim_{N\rightarrow\infty} \frac{S}{\frac{c}{N} + 1}\\
+&= \frac{\lim_{N\rightarrow\infty} S }{\lim_{N\rightarrow\infty}(\frac{c}{N} + 1)}\\
+&= \frac{\lim_{N\rightarrow\infty} S }{\lim_{N\rightarrow\infty}\frac{c}{N} + \lim_{N\rightarrow\infty}1}\\
+&= \frac{S}{0 + 1}\\
+&= S
+\end{align*}
+!et
+!esol
+!esubex

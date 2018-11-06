@@ -1,0 +1,525 @@
+[Mikkel: confirm physical unit for N, acquire right b0, beta etc for birth and
+death rate, make a deal about birth=death which is an equilibrium and is found
+in both expdiff and logdiff]
+===== Exercise:  Modeling the Survival of Polar Bears by the Logistic Difference Equation =====
+
+Polar bears (Ursus maritimus) rely almost exclusively on a diet
+of seals. To minimize their energy consumption the bears still-hunt, waiting
+for hours by breathing holes in the sea ice. When a seal
+surfaces to breathe the bear stands on its hind legs and smacks it on the head
+with both of its front paws to stun it. Then the bear bites it on the neck and
+drags it onto the ice.
+MOVIE: [https://youtu.be/bA-jDk3-Mgs, width=420 height=315]
+
+Presently, the sea ice minimum extent across the Arctic is decreasing at a rate
+of $14\%$ per decade, spring break-up is occurring earlier, and fall freeze-up is
+occurring later (9). This decline in sea ice is likely reducing access to, and
+abundance of, seal prey (10).
+
+Metabolism determines the rate at which organisms require energy from
+their environment (11). Therefore, the polar bear metabolic rates provide an
+important metric for linking declines in Arctic sea ice to polar bear survival.
+Changes in energy balance resulting from increased energy expenditure or
+reductions in foraging opportunities could lead to declines in body condition,
+survival, and reproductive success.
+
+A recent study [1] contradicts previous assumptions that the polar bear
+annual field metabolic rates (FMRs) would be relatively low because of the
+bear's sit-and-wait style of hunting and theorized ability to reduce metabolism
+while fasting (13, 14), similar to that of denning bears (13, 15). Daily FMRs
+measured over 8 to 11 days, averaged $0.45\; ml CO2/(g \cdot h)$, which converts to
+$51.6\; MJ/day$ or $12324.7\; kcal/day$.
+
+To remain in energy balance with these metabolic demands,
+polar bears have evolved hunting tactics to prey on high energy-content prey,
+such as ringed seals (Pusa hispida). Using recent [1] measures of daily FMR, it is
+estimated that a solitary female bear on the spring sea ice would on average
+need to eat either one adult ringed seal, three subadult ringed seals, or 19
+newborn ringed seal pups every 10 to 12 days to remain in energetic balance.
+
+In this exercise we will determine how the loss of hunting-ground area due to declines
+in Arctic sea ice can affect the Polar bear population dynamics.
+We will focus our attention to Svalbard og Jan Mayen and treat this area as
+one big island.
+
+The annual population size $N_t$ of polar bears is governed by the number of deaths
+per year $D$, the number of births per year $B$, immigration $I$ and
+emigration $E$. We can thus model the population size $N_{t + 1}$ at the next
+year $t + 1$ as
+
+!bt
+\begin{align}
+label{eq:main}
+N_{t+1} = N_t + B - D + I - E
+\end{align}
+!et
+
+We assume that there is no polar bears that leave or enter our area of
+interest $(E = I = 0)$. Further, the number of births and deaths are governed
+by the birth and death rate respectively given by $b$ and $d$ we may thus write
+!bt
+\begin{align*}
+B &= bN_t\\
+D &= dN_t.
+\end{align*}
+!et
+Here, the birth and death rate have the units $births / (individual \cdot time)$
+and $deaths / (individual \cdot time)$ respectively.
+
+Furthermore, we can get the exponential difference equation given by
+!bt
+\begin{equation}
+label{eq:expdiff}
+N_{t+1} = (1 + r)N_t\\
+r = b - d.
+\end{equation}
+!et
+
+!bsubex
+Show how we get the exponential difference equation given in Eq.
+(ref{eq:expdiff}) including the new information about emigration,
+immigration, birth- and death rates
+
+!bsol
+Substitute $B = bN_t$, $D = dN_t$ and $E = I = 0$ in Eq. (ref{eq:main})
+!bt
+\begin{align*}
+N_{t+1} &= N_t + bN_t - dN_t\\
+&=N_t(1 + r)\\
+r &= b - d.
+\end{align*}
+!et
+!esol
+
+!bans
+See Eq. (ref{eq:expdiff})
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
+
+################################################################################
+!bsubex
+Define the constant $r = b - d$ as the intrinsic rate of increase and assume
+that the initial population size is given by $N_0$. Find the
+value $r$ where the population size $N_{t + 1}$ increases, where it decreases
+and where it neither increases or decreases.
+Plot the results for three cases and comment on the type of increase and
+decrease you observe (i.e. linear, constant, exponential), is this realistic?
+
+!bsol
+
+
+!bc pycod
+import numpy as np
+import matplotlib.pyplot as plt
+
+t = np.linspace(0, 1, 100)
+
+
+def N(t, N0, r):
+    return N0*(1 + r)**t
+
+N0 = 10
+
+fig = plt.figure()
+plt.plot(t, N(t, N0, r=0), label='r=0')
+plt.plot(t, N(t, N0, r=0.5), label='r=0.5')
+plt.plot(t, N(t, N0, r=-0.5), label='r=-0.5')
+plt.legend()
+!ec
+!esol
+
+!bans
+We set $R=1+r$ and note that the general solution to $N_{t+1}=R N_t$ with
+initial condition $N_0$ is $N_t = N_0R^t$. Here $R = 1$ yield $N_t = N_0$,
+$R>1$ gives exponential growth and $R<1$ gives exponential decay and
+solve $r + 1 = 1$, $r + 1 > 1$ and $r + 1 < 1$ respectively.
+!bt
+\begin{align*}
+&N_{t} = N_0(1 + r)^t \\
+&r = 0:\; N_t\; \text{is constant at}\; N_0\\
+&r < 0:\; N_t\; \text{decays exponentially to zero}\\
+&r > 0:\; N_t\; \text{increases exponentially without bounds}\\
+\end{align*}
+!et
+The exponential increase without bounds is not realistic as crowding will make
+food resources scarce leading to a higher death rate and or lower birth rate.
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
+
+When we have increased crowding we expect effects on birth and death rates.
+Specifically we expect that as the population increase, the birth rate should
+decrease, i.e. less babies as a result of less resources available. Similarly
+the death rate should increase. In other words the birth and death rates
+should be modeled as functions of the current population size $N_t$.
+The simplest way to model this is with a linear model. The model for the birth
+rate can be written as $b_t = b_0 - \beta N_t$. Here, $b_t$ is still the birth
+rate, however it is governed by two new constants and where the subscript $t$
+indicates that $b$ is no longer a constant, but a function of time.
+The first constant $b_0$ represents the ideal birth
+rate, i.e. the birth rate which would have happen under perfect (uncrowded)
+conditions. The second constant $\beta$ represents how strongly the birth rate
+is affected by crowding, if $\beta$ is very large, the birth rate drops rapidly
+as the population increases. Similarly, we model the death rate by the model
+$d_t = d_0 + \delta N_t$ where $d_0$ is the ideal death rate and $\delta$
+represents how strong dependence the death rate have on the current population
+size $N_t$.
+
+################################################################################
+!bsubex
+Write two python functions that represents the birth and death rates which takes
+the ideal rate constants and the population size as input and plot these
+functions for the parameters given in the below script. How many births and
+deaths do you expect if the population size is $N_t = 100$?
+
+!bc pycod
+import numpy as np
+import matplotlib.pyplot as plt
+
+N_max = 4000
+N = np.arange(0, N_max, 1)
+b0 = 1.25
+beta = .0005
+d0 = 0.05
+delta = .0005
+
+
+def birth_rate(N, b0, beta):
+    rate = # write answer here
+    return rate
+
+
+def death_rate(N, d0, delta):
+    rate = # write answer here
+    return rate
+
+fig = plt.figure()
+plt.plot(N, birth_rate(N, b0, beta), label='birth rate')
+plt.plot(N, death_rate(N, d0, delta), label='death rate')
+plt.legend()
+!ec
+
+!bsol
+!bc pycod
+import numpy as np
+import matplotlib.pyplot as plt
+
+N_max = 4000
+N = np.arange(0, N_max, 1)
+b0 = 1.25
+beta = .0005
+d0 = 0.05
+delta = .0005
+
+
+def birth_rate(N, b0, beta):
+    rate = b0 - beta * N
+    return rate
+
+
+def death_rate(N, d0, delta):
+    rate = d0 + delta * N
+    return rate
+
+fig = plt.figure()
+plt.plot(N, birth_rate(N, b0, beta), label='birth rate')
+plt.plot(N, death_rate(N, d0, delta), label='death rate')
+plt.legend()
+
+print('Number of births at N = {}, is '.format(N_max), birth_rate(N_max, b0, beta) * N_max)
+print('Number of deaths at N = {}, is '.format(N_max), death_rate(N_max, d0, delta) * N_max)
+!ec
+!esol
+
+!bans
+!bt
+\begin{align*}
+b = b0 - \beta N \Rightarrow b = 10 - 0.1 * 100\text{ births/(size\cdot time) }\Rightarrow N_b = b * N_t = 0 * 100 = 0\\
+d = d0 - \delta N \Rightarrow d = 5 + 0.2 * 100\text{ deaths/(size\cdot time) }\Rightarrow N_d = d * N_t = 25 * 100 = 2500
+\end{align*}
+!et
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
+
+To understand how crowding effects the population size we want to insert the
+newly acquired birth and death rates $b_t$ and $d_t$ respectively in
+Eq. (ref{eq:main}). We are then capable to derive the following logistic difference
+equation.
+!bt
+\begin{equation}
+label{eq:logdiff}
+N_{t+1} = N_t + rN_t\left(1 - \frac{N_t}{K}\right)\\
+K = \frac{b_0 - d_0}{\beta + \delta}\\
+r = b_0 - d_0
+\end{equation}
+!et
+Here $K$ represents the carrying capacity and $r$ represents the rate of
+increase under ideal conditions. The carrying capacity is biologically
+defined as the maximum population size that can be supported, and have the unit
+\textit{number of individuals}. It represents many potentially limiting factors such as
+the availability of space, food and shelter. In the model (ref{eq:logdiff})
+polar bears resources are depleted incrementally as crowding increases.
+
+If we look closer at Eq. (ref{eq:logdiff}) we can see that it is actually Eq.
+(ref{eq:expdiff}) but where $rN_t$ is multiplied by $1 - \frac{N_t}{K}$.
+This quantity represents the unused portion of the carrying capacity.
+For example, if $K = 100$ and $N_t = 4$, the
+unused portion of the carrying capacity is $1 - 4/100 = 0.96$. This means that
+the population is relatively uncrowded and increasing at $96\%$ of the
+exponential increase one would get by Eq. (ref{eq:expdiff}). Furthermore,
+if the population is larger than the carrying capacity, e.g. in the example
+larger than $100$, the population have a negative increase relative to the
+exponential growth and quickly returns to or less than $K$. This effectively
+puts a brake on the exponential growth $(1 + r)^t$ we get from Eq. (ref{eq:expdiff}).
+# remember that we here have a biological explanation on oscillatory behavior
+
+################################################################################
+!bsubex
+ Derive the model (ref{eq:logdiff}).
+
+!bsol
+!bt
+\begin{align*}
+N_{t+1} &= (1 + (b_0 - \beta N_t) - (d_0 + \delta N_t)] N_t\\
+&= (1 + b_0 - d_0 - \beta N_t  - \delta N_t)] N_t\\
+&= [1 + (b_0 - d_0) - (\beta + \delta)N_t] N_t\\
+\end{align*}
+!et
+Now we exploit the fact that $\frac{(b_0 - d_0)}{(b_0 - d_0)} = 1$ and multiply
+$1$ with $((b_0 - d_0) - (\beta + \delta)N_t)$
+!bt
+\begin{align*}
+N_{t+1} &= [1 + \frac{(b_0 - d_0)}{(b_0 - d_0)}((b_0 - d_0) - (\beta + \delta)N_t)] N_t\\
+&= \left[1 + (b_0 - d_0)\left(\frac{(b_0 - d_0)}{(b_0 - d_0)} - \frac{(\beta + \delta)}{(b_0 - d_0)}N_t\right)\right] N_t\\
+&= \left[1 + r\left(1 - \frac{1}{K}N_t\right)\right] N_t\\
+\end{align*}
+!et
+!esol
+
+!bans
+See Eq. (ref{eq:logdiff})
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
+When do we get no change in the population from year to year i.e. $N_{t + 1} = N_t$?
+This is called an equilibrium point, and there are two equilibrium points of
+Eq. (ref{eq:logdiff}) $b_0 = d_0$ and $d = b$.
+
+################################################################################
+!bsubex
+Find the two equilibrium points of Eq. (ref{eq:logdiff}) 1) $b_0 = d_0$
+and 2) $d = b$.
+
+!bsol
+!bt
+\begin{align*}
+N_{t+1} &= N_t + r\left(1 - \frac{1}{K}N_t\right)N_t\\
+&= N_t \text{ when } r\left(1 - \frac{1}{K}N_t\right) = 0
+\end{align*}
+!et
+We can thus see that when $r = 0$, then $N_{t + 1} = N_t$ and is thus an
+equilibrium point. Consequently we can write $b_0 - d_0 = 0$ and finally get
+!bt
+\begin{align*}
+b_0 = d_0.
+\end{align*}
+!et
+On the other hand, if $1 = \frac{N_t}{K}$ we get
+$\left(1 - \frac{1}{K}N_t\right) = 0$ and the second equilibrium point is thus
+$K = N_t$. However, we want to express this in terms of $b_0, d_0, b$ and $d$
+and therefore exploit the fact that $K = \frac{b_0 - d_0}{\beta + \delta}$
+giving
+!bt
+\begin{align*}
+N_t &= \frac{b_0 - d_0}{\beta + \delta}
+\end{align*}
+!et
+Moreover, we know that $b = b_0 - \beta N_t$ giving $\beta = (-b + b_0)/N_t$
+and $d = d_0 + \delta N_t$ giving $\delta = (d - d_0)/N_t$, and we may write
+!bt
+\begin{align*}
+N_t &= \frac{b_0 - d_0}{\beta + \delta}\\
+&= \frac{b_0 - d_0}{(-b_t + b0)/N_t + (d_t - d_0)/N_t}\\
+&= N_t\frac{b_0 - d_0}{(-b + b0) + (\delta - d_0)}\\
+1 &= \frac{(b_0 - d_0)}{(d - b) + (b_0 - d_0)}\\
+(d - b) + (b_0 - d_0) &= (b_0 - d_0)\\
+b &= d
+\end{align*}
+!et
+!esol
+
+!bans
+!bt
+\begin{align*}
+&b_0 = d_0\\
+&b = d
+\end{align*}
+!et
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
+The equilibrium point $r = 0$ or $b_0 = d_0$ is most intuitive when considered
+in light of the exponential difference equation (ref{eq:expdiff}). Which says that
+if the birth and death rate is equal, then the population does neither grow or
+decline. However, in the logistic difference equation (ref{eq:logdiff}) it
+says that when the ideal birth and death conditions are equal, the population growth
+will be at a standstill. The other equilibrium point $K = N_t$ or $b_t = d_t$ is
+also intuitive in the sense that if the population is equal to the carrying
+capacity, the population does not grow any more. However, it is not as
+clear to understand as $b_t$ and $d_t$ changes as the population increases.
+In the next exercise we will look more into this.
+
+################################################################################
+# with small time steps we can show that we get logistic growth
+!bsubex
+We know from the previous exercise that if $b_t = d_t$ we get $K = N_t$. Plot
+the birth and death rate in the same plot and mark where
+these two curves intersect. Compare this number with the carrying capacity
+$K = \frac{b_0 - d_0}{\beta + \delta}$. Explain how the carrying capacity
+relates to the birth, and death rates.
+
+!bsol
+!bc pycod
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+N_max = 4000
+N = np.arange(0, N_max, 1)
+b0 = 1.25
+beta = .0005
+d0 = 0.05
+delta = .0005
+
+K = (b0 - d0) / (beta + delta)
+
+
+def birth_rate(N, b0, beta):
+    rate = b0 - beta * N
+    return rate
+
+
+def death_rate(N, d0, delta):
+    rate = d0 + delta * N
+    return rate
+
+fig = plt.figure()
+plt.plot(N, birth_rate(N, b0, beta), label='birth rate (b)')
+plt.plot(N, death_rate(N, d0, delta), label='death rate (d)')
+plt.plot(np.ones_like(N) * K,
+         np.linspace(0, death_rate(K, d0, delta), len(N)), ls='--', c='k')
+plt.plot(K, death_rate(K, d0, delta), ls='none', c='k', marker='*')
+plt.text(x=K+100, y=death_rate(K, d0, delta), s='carrying capacity (K)')
+plt.ylim([0, death_rate(N_max, d0, delta)])
+plt.xlim([0, N_max])
+plt.legend(loc=9)
+!ec
+!esol
+
+!bans
+bla
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
+
+Now, let's see how the polar bears population will grow!
+
+################################################################################
+!bsubex
+
+
+!bsol
+!bc pycod
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+
+N_start = 100
+duration = 100
+
+r = b0 - d0
+
+K = r / (beta + delta)
+
+def N_next(N, K, r):
+    K_unused = 1. - N / K
+    return N * (1 + r * K_unused)
+
+years = np.arange(0, duration, 1)
+
+N_t = np.zeros(duration)
+N_t[0] = N_next(N_start, K, r)
+
+for year in years[:-1]:
+    N_t[year + 1] = N_next(N_t[year], K, r)
+
+fig = plt.figure()
+plt.plot(years, N_t)
+!ec
+!esol
+
+!bans
+bla
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
+
+################################################################################
+!bsubex
+
+
+!bsol
+!bc pycod
+import numpy as np
+from ipywidgets import *
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib notebook
+%matplotlib notebook
+
+N_start = 100
+duration = 100
+
+r = b0 - d0
+
+K = r / (beta + delta)
+
+def N_next(N, K, r):
+    K_unused = 1. - N / K
+    return N * (1 + r * K_unused)
+
+def polar_bears(N_start, duration, K, r):
+    years = range(0, duration)
+    N_t = np.zeros(duration)
+    N_t[0] = N_next(N_start, K, r)
+    for year in years[:-1]:
+        N_t[year + 1] = N_next(N_t[year], K, r)
+    return years, N_t
+
+fig = plt.figure()
+line, = plt.plot(*polar_bears(N_start, duration, K, r))
+
+def update(b0, d0):
+    r = b0 - d0
+    K = r / (beta + delta)
+    if K == 0:
+        return
+    years, y = polar_bears(N_start, duration, K, r)
+    line.set_ydata(y)
+    plt.ylim([y.min(), y.max()])
+    fig.canvas.draw()
+!ec
+
+!bc pycod
+interact(update,
+         b0=FloatSlider(min=0., max=3., step=.01, value=b0),
+         d0=FloatSlider(min=0., max=3., step=.01, value=d0));
+!ec
+!esol
+
+!bans
+bla
+!eans
+# do not write anything below solution and answer blocks before esubex
+!esubex
